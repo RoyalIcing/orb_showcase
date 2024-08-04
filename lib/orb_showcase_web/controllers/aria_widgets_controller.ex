@@ -10,6 +10,7 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
 
     conn
     |> assign(:wat, wat)
+    |> assign(:wasm, wasm)
     |> assign(:wasm_size, byte_size(wasm))
     |> assign(:widget_html, html)
     |> render(:menu)
@@ -37,12 +38,6 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
   defp menu_wasm() do
     wat = Orb.to_wat(OrbShowcase.Widgets.MenuButton)
 
-    base_path = System.tmp_dir!()
-    path_wat = Path.join(base_path, "menu.wat")
-    path_wasm = Path.join(base_path, "menu.wasm")
-    File.write!(path_wat, wat)
-    System.cmd("wat2wasm", [path_wat], cd: base_path)
-    wasm = File.read!(path_wasm)
-    wasm
+    OrbShowcase.WasmRegistry.wat_to_wasm(wat)
   end
 end

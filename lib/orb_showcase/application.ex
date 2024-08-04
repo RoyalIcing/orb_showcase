@@ -16,7 +16,8 @@ defmodule OrbShowcase.Application do
       # Start a worker by calling: OrbShowcase.Worker.start_link(arg)
       # {OrbShowcase.Worker, arg},
       # Start to serve requests, typically the last entry
-      OrbShowcaseWeb.Endpoint
+      OrbShowcaseWeb.Endpoint,
+      {Registry, keys: :unique, name: OrbShowcase.WasmRegistry}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
