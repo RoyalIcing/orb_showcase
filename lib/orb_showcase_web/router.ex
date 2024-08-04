@@ -18,8 +18,11 @@ defmodule OrbShowcaseWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
     get "/menu", AriaWidgetsController, :menu
     get "/menu.wasm", AriaWidgetsController, :menu_wasm
+
+    get "/generate", GeneratorController, :create
   end
 
   # Other scopes may use custom stacks.

@@ -12,10 +12,13 @@ defmodule OrbShowcase.Generator.OpenAI do
     )
   end
 
-  def complete(message) do
+  def complete(message, system_prompt \\ "") do
     req_json = %{
       model: @gpt_model,
-      messages: [%{role: "user", content: message}],
+      messages: [
+        %{role: "system", content: system_prompt},
+        %{role: "user", content: message}
+      ],
       temperature: 0.7
     }
 
