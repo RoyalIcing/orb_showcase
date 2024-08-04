@@ -58,7 +58,8 @@ defmodule OrbShowcase.MixProject do
       {:bandit, "~> 1.5"},
       {:orb, "~> 0.0.51"},
       {:silver_orb, "~> 0.0.9"},
-      {:wasmex, "~> 0.9.1"}
+      {:wasmex, "~> 0.9.1"},
+      {:req, "~> 0.5.6"}
     ]
   end
 
