@@ -23,8 +23,8 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
   end
 
   defp menu_wasm() do
-    wat = Orb.to_wat(OrbShowcase.Widgets.MenuButton)
-
-    OrbShowcase.WasmRegistry.wat_to_wasm(wat)
+    OrbShowcase.Widgets.MenuButton
+    |> Orb.to_wat()
+    |> OrbShowcase.WasmRegistry.wat_to_wasm()
   end
 end
