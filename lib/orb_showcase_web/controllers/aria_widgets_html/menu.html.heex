@@ -1,0 +1,28 @@
+<style>
+  lipid-menu-button button {
+    padding: 0.5em 1em;
+    background: rgba(255 255 255 / 20%);
+    border: 1px solid rgba(255 255 255 / 10%);
+  }
+  lipid-menu-button *:focus {
+    background: #0474dd;
+  }
+  lipid-menu-button [role=menu] {
+    max-width: max-content;
+    border: 1px solid rgba(255 255 255 / 20%);
+  }
+  lipid-menu-button [role=menuitem] {
+    padding: 0.5em 1em;
+  }
+</style>
+
+<div>
+  <%= raw(@widget_html) %>
+</div>
+
+<hr class="my-8" />
+
+<details>
+  <summary>View source (<%= @wasm_size %> compiled bytes)</summary>
+  <pre><%= @wat %></pre>
+</details>
