@@ -17,12 +17,12 @@
 </style>
 
 <div>
-  <%= raw(@widget_html) %>
+  <WasmHTML.html wasm={@wasm} />
 </div>
 
 <hr class="my-8" />
 
 <details>
-  <summary>View source (<%= @wasm_size %> compiled bytes)</summary>
+  <summary>View source (<%= @wasm_size %> bytes compiled)</summary>
   <pre><%= @wat %></pre>
 </details>
