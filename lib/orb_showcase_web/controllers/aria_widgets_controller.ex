@@ -6,13 +6,11 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     # wasm = Orb.to_wasm(OrbShowcase.Widgets.MenuButton)
 
     wasm = menu_wasm()
-    html = execute_wasm(wasm)
 
     conn
     |> assign(:wat, wat)
     |> assign(:wasm, wasm)
     |> assign(:wasm_size, byte_size(wasm))
-    |> assign(:widget_html, html)
     |> render(:menu)
   end
 
@@ -22,17 +20,6 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     conn
     |> put_resp_content_type("application/wasm", nil)
     |> send_resp(200, wasm)
-  end
-
-  defp execute_wasm(wasm) do
-    {:ok, pid} = Wasmex.start_link(%{bytes: wasm})
-
-    {:ok, [ptr, len]} = Wasmex.call_function(pid, :text_html, [])
-
-    {:ok, memory} = Wasmex.memory(pid)
-    {:ok, store} = Wasmex.store(pid)
-    html = Wasmex.Memory.read_binary(store, memory, ptr, len)
-    html
   end
 
   defp menu_wasm() do
