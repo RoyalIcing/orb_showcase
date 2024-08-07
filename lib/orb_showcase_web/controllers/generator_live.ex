@@ -14,11 +14,17 @@ defmodule OrbShowcaseWeb.GeneratorLive do
     {:ok, socket}
   end
 
+  defp default_prompt() do
+    """
+    An accordion menu with 3 items: apple, banana, pear.
+    """
+  end
+
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
     <form phx-submit="submit" class="space-y-8">
-      <.input id="prompt_textbox" type="textarea" label="Prompt" name="prompt" value="" rows={10} />
+      <.input id="prompt_textbox" type="textarea" label="Prompt" name="prompt" value={default_prompt()} rows={3} />
       <.button type="submit">Generate</.button>
       <output for="prompt_textbox" class="flex">
         <pre class="whitespace-pre-wrap"><%= @output %></pre>
@@ -26,6 +32,8 @@ defmodule OrbShowcaseWeb.GeneratorLive do
     </form>
 
     <WasmHTML.html wasm={sample_wasm()} />
+
+    <.output_wasm_html result={@output} />
     """
   end
 
@@ -33,18 +41,26 @@ defmodule OrbShowcaseWeb.GeneratorLive do
   def handle_event("submit", form_data, socket) do
     %{"prompt" => user_prompt} = form_data
 
-    example = do_read_menu_example()
+    menu_example = do_read_menu_example()
+    navigation_example = sample_source()
 
     system_prompt = """
     You are generator of WebAssembly, using a DSL for Elixir called Orb.
 
-    Here is an example Orb module that renders interactive HTML for a menu button that is ARIA compliant.
-    #{example}
+    Note that Orb syntax is a DSL, not full Elixir. There is no `cond` or `case` (only `if`), no `while`. Variables must be declared with their type after the function argument definition, e.g. see `menu_list` declaring variable `i` of type `I32` by writing `i: I32`. Orb has only `===` not `==`. Prefer to hard-code items instead of using loops. There is no `put_elem`. Functions are define using a key-value syntax but they are passed just as values. `String` or `StringBuilder` cannot be passed as a value or function argument. Instead of making functions with dynamic strings, define separate functions multiple times for say each item. And I repeat there is no `case`, use `if` instead.
 
-    Please generate a new Orb module that renders ARIA-compliant interactive HTML for the stated problem.
+    Here is an example Orb module that renders static HTML for a navigation that is ARIA compliant.
+    #{navigation_example}
+
+    Here is an example Orb module that renders interactive HTML for a menu button that is ARIA compliant.
+    #{menu_example}
+
+    Please generate a new Orb module that renders ARIA-compliant interactive HTML for the stated problem. Name the Elixir module OrbShowcase.Widgets.Generated
     """
 
     result = OpenAI.complete(user_prompt, system_prompt)
+
+    # TODO: use assign_async
 
     socket =
       socket
@@ -63,47 +79,8 @@ defmodule OrbShowcaseWeb.GeneratorLive do
       use Orb
       use SilverOrb.StringBuilder
 
-      defmodule FocusEnum do
-        def none(), do: 0
-        def menu(), do: 1
-        def item(), do: 2
-      end
-
-      global do
-        @active_item_index 0
-        @focus_enum FocusEnum.none()
-        @item_count 3
-      end
-
       global :export_mutable do
         @id_suffix 1
-      end
-
-      defw open?(), I32 do
-        @active_item_index > 0
-      end
-
-      defw focus_item(index: I32) do
-        @active_item_index =
-          if index > @item_count do
-            i32(1)
-          else
-            if index <= 0 do
-              @item_count
-            else
-              index
-            end
-          end
-
-        @focus_enum = FocusEnum.item()
-      end
-
-      defw focus_previous_item() do
-        focus_item(@active_item_index - 1)
-      end
-
-      defw focus_next_item() do
-        focus_item(@active_item_index + 1)
       end
 
       defw nav_id(), StringBuilder do
@@ -113,51 +90,40 @@ defmodule OrbShowcaseWeb.GeneratorLive do
         end
       end
 
-      defw nav_item_id(index: I32), StringBuilder do
-        build! do
-          "navitem:"
-          append!(decimal_u32: @id_suffix)
-          "."
-          append!(decimal_u32: index)
-        end
-      end
-
-      defwp navigation_menu(), StringBuilder, i: I32 do
+      defwp navigation_menu(), StringBuilder do
         build! do
           ~S|<nav role="navigation" id="|
           nav_id()
           ~S|" aria-label="Main Navigation" tabindex="0" data-keydown-arrow-left="focus_previous_item" data-keydown-arrow-right="focus_next_item">|
           "\n"
 
-          loop EachItem, result: StringBuilder do
-            nav_item(i)
+          nav_item_open()
+          "Features"
+          nav_item_close()
 
-            i = i + 1
+          nav_item_open()
+          "Pricing"
+          nav_item_close()
 
-            if i <= @item_count do
-              EachItem.continue()
-            end
-          end
+          nav_item_open()
+          "Sign In"
+          nav_item_close()
 
           ~S|</nav>|
           "\n"
         end
       end
 
-      defwp nav_item(i: I32), StringBuilder do
+      defwp nav_item_open(), StringBuilder do
         build! do
-          ~S|<a href="#item-|
-          append!(decimal_u32: i)
-          ~S|" id="|
-          nav_item_id(i)
-          ~S|" tabindex="-1" role="menuitem" data-action="select_item:[|
-          append!(decimal_u32: i)
-          ~S|]" data-pointerover="focus_item:[|
-          append!(decimal_u32: i)
-          ~S|]">|
-          ~S|Navigation Item |
-          append!(decimal_u32: i)
-          ~S|</a>|
+          ~S|<li><a href="#todo">|
+          "\n"
+        end
+      end
+
+      defwp nav_item_close(), StringBuilder do
+        build! do
+          ~S|</a></li>|
           "\n"
         end
       end
@@ -170,16 +136,6 @@ defmodule OrbShowcaseWeb.GeneratorLive do
           navigation_menu()
           "</golden-orb>\n"
           "</lipid-header-navigation>\n"
-        end
-      end
-
-      defw focus_id(), StringBuilder do
-        build! do
-          if @active_item_index > 0 do
-            nav_item_id(@active_item_index)
-          else
-            ""
-          end
         end
       end
     end
@@ -210,5 +166,45 @@ defmodule OrbShowcaseWeb.GeneratorLive do
       wat ->
         wat |> OrbShowcase.WasmRegistry.wat_to_wasm()
     end
+  end
+
+  defp prompt_result_to_wasm(nil), do: nil
+
+  defp prompt_result_to_wasm(result) do
+    [_, "elixir\n" <> source, _] = String.split(result, "```")
+
+    orb_source_to_wasm(source)
+  end
+
+  defp orb_source_to_wasm(source) when is_binary(source) do
+    source
+    |> dbg()
+    |> Code.string_to_quoted()
+    |> case do
+      {:ok, quoted} ->
+        Code.eval_quoted(quoted)
+        mod = OrbShowcase.Widgets.Generated
+        Orb.to_wat(mod)
+
+      {:error, {meta, message_info, token}} ->
+        IO.inspect({meta, message_info, token}, label: "Compile ERROR")
+        ""
+    end
+    |> dbg()
+    |> case do
+      "" ->
+        nil
+
+      wat ->
+        wat |> OrbShowcase.WasmRegistry.wat_to_wasm()
+    end
+  end
+
+  defp output_wasm_html(assigns) do
+    ~H"""
+    <div :if={wasm = prompt_result_to_wasm(@result)}>
+      <WasmHTML.html wasm={wasm} />
+    </div>
+    """
   end
 end
