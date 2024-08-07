@@ -1,5 +1,6 @@
 defmodule OrbShowcase.Generator.OpenAI do
-  @gpt_model "gpt-4o-mini"
+  # @gpt_model "gpt-4o-mini"
+  @gpt_model "gpt-4o-2024-05-13"
 
   defp req() do
     api_key = System.get_env("OPENAI_API_KEY") || raise "Env var OPENAI_API_KEY must be set."
@@ -8,7 +9,12 @@ defmodule OrbShowcase.Generator.OpenAI do
       base_url: "https://api.openai.com",
       headers: [
         authorization: "Bearer #{api_key}"
-      ]
+      ],
+      connect_options: [
+        timeout: 60_000,
+        protocols: [:http2]
+      ],
+      receive_timeout: 60_000
     )
   end
 
