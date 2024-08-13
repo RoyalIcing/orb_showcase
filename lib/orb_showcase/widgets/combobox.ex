@@ -136,7 +136,7 @@ defmodule OrbShowcase.Widgets.Combobox do
     end
 
     loop EachChar do
-      if Memory.load!(I32.U8, state_ptr) !== Memory.load!(I32.U8, input_ptr) do
+      if ascii_to_lower(Memory.load!(I32.U8, state_ptr)) !== ascii_to_lower(Memory.load!(I32.U8, input_ptr)) do
         return(0)
       end
 
@@ -148,6 +148,14 @@ defmodule OrbShowcase.Widgets.Combobox do
     end
 
     1
+  end
+
+  defwp ascii_to_lower(char: I32.U8), I32.U8 do
+    if char >= ?A &&& char <= ?Z do
+      char + 32
+    else
+      char
+    end
   end
 
   defmodule FocusEnum do
