@@ -22,6 +22,9 @@ defmodule OrbShowcaseWeb.Router do
     get "/menu", AriaWidgetsController, :menu
     get "/menu.wasm", AriaWidgetsController, :menu_wasm
 
+    get "/combobox", AriaWidgetsController, :combobox
+    get "/combobox.wasm", AriaWidgetsController, :combobox_wasm
+
     get "/generate", GeneratorController, :create
   end
 

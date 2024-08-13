@@ -48,7 +48,11 @@ class GoldenOrb extends HTMLElement {
 
             // const action = dataset[specificActionKey] || dataset.action;
 
+            console.log("action:", action);
+
             if (typeof action === "string") {
+                event.preventDefault();
+
                 console.log("calling", action, this.exports);
                 this.exports[action]?.apply();
                 this.update();
@@ -102,7 +106,9 @@ class GoldenOrb extends HTMLElement {
         if (!reader) return;
 
         const string = reader.text_html();
+
         this.innerHTML = string;
+        // window.morphdom(this, string);
 
         const focusID = reader.focus_id();
         console.log(string)

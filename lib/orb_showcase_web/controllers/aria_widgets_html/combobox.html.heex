@@ -1,0 +1,42 @@
+<style>
+  lipid-combobox label {
+    display: flex;
+    margin-bottom: 0.5rem;
+  }
+  lipid-combobox input {
+    padding: 0.5em 1em;
+    color: black;
+    background: white;
+    border: 1px solid hsl(0 0 100% / 10%);
+  }
+  lipid-combobox button {
+    padding: 0.5em 1em;
+    background: rgba(255 255 255 / 20%);
+    border: 1px solid rgba(255 255 255 / 10%);
+  }
+  lipid-combobox [role=listbox] {
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 250px;
+    max-width: max-content;
+    border: 1px solid rgba(255 255 255 / 20%);
+  }
+  lipid-combobox [role=option] {
+    padding: 0.25em 1em;
+    cursor: pointer;
+  }
+  lipid-combobox [role=option]:focus, lipid-combobox [role=option]:hover {
+    background: #0474dd;
+  }
+</style>
+
+<div>
+  <WasmHTML.html wasm={@wasm} />
+</div>
+
+<hr class="my-8" />
+
+<details>
+  <summary>View source (<%= byte_size(@wasm) %> bytes compiled)</summary>
+  <pre><%= @wat %></pre>
+</details>

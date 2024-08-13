@@ -15,7 +15,7 @@ defmodule OrbShowcase.WasmRegistry do
         System.cmd("wat2wasm", [path_wat], cd: base_path)
         wasm = File.read!(path_wasm)
         Registry.put_meta(__MODULE__, key, wasm)
-        wasm |> dbg()
+        wasm
     end
   end
 end
