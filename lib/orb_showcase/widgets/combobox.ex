@@ -16,6 +16,8 @@ defmodule OrbShowcase.Widgets.Combobox do
     NimbleCSV.define(StatesCSV, [])
 
     defp do_states_data() do
+      {:ok, _} = Application.ensure_all_started(:req)
+
       data = Req.get!(@usa_states_url).body
 
       rows = StatesCSV.parse_string(data)
