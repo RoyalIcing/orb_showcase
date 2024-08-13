@@ -9,7 +9,8 @@ module.exports = {
   content: [
     "./js/**/*.js",
     "../lib/orb_showcase_web.ex",
-    "../lib/orb_showcase_web/**/*.*ex"
+    "../lib/orb_showcase_web/**/*.*ex",
+    "../lib/orb_showcase/widgets/**/*.*ex"
   ],
   theme: {
     extend: {

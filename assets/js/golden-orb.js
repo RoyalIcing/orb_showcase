@@ -63,7 +63,8 @@ class GoldenOrb extends HTMLElement {
             const specificActionKey = event.type + key;
             const specificActionAttribute = kebabize(specificActionKey);
 
-            const action = target.closest(`[data-${specificActionAttribute}]`)?.dataset[specificActionKey] || target.dataset.action;
+            // const action = target.closest(`[data-${specificActionAttribute}]`)?.dataset[specificActionKey] || target.dataset.action;
+            const action = target.closest(`[data-${specificActionAttribute}]`)?.dataset[specificActionKey];
 
             // const action = dataset[specificActionKey] || dataset.action;
 
@@ -131,6 +132,7 @@ class GoldenOrb extends HTMLElement {
         const selectionStart = focused?.selectionStart;
         const selectionEnd = focused?.selectionEnd;
 
+        // TODO: find golden-orb element and replace just that.
         this.innerHTML = string;
         // window.morphdom(this, string);
 

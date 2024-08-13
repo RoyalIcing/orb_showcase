@@ -165,6 +165,7 @@ defmodule OrbShowcase.Widgets.Combobox do
   end
 
   global do
+    @open? 0
     @active_item_index 0
     @focus_enum FocusEnum.none()
     # Incremented when the focus has changed
@@ -179,31 +180,29 @@ defmodule OrbShowcase.Widgets.Combobox do
   end
 
   defw open?(), I32 do
-    @active_item_index > 0
+    @open?
   end
 
   defw open() do
     if @item_count > 0 do
+      @open? = 1
       @active_item_index = 1
       @focus_enum = FocusEnum.input()
     end
   end
 
   defw close() do
+    @open? = 0
     @active_item_index = 0
     @focus_enum = FocusEnum.input()
   end
 
   defw toggle() do
-    if @active_item_index do
+    if open?() do
       close()
     else
       open()
     end
-  end
-
-  defw focus_input(index: I32) do
-    @focus_enum = FocusEnum.input()
   end
 
   defw focus_item(index: I32) do
@@ -218,7 +217,8 @@ defmodule OrbShowcase.Widgets.Combobox do
         end
       end
 
-    @focus_enum = FocusEnum.menu()
+    @open? = 1
+    @focus_enum = FocusEnum.input()
   end
 
   defw focus_previous_item() do
@@ -285,7 +285,7 @@ defmodule OrbShowcase.Widgets.Combobox do
       ~S|" value="|
       input_used_range()
 
-      ~S|" data-input-write="input_range" data-keydown-arrow-down="focus_next_item">|
+      ~S|" data-action="open" data-input-write="input_range" data-keydown-arrow-down="focus_next_item" data-keydown-arrow-up="focus_previous_item">|
     end
   end
 
@@ -293,16 +293,16 @@ defmodule OrbShowcase.Widgets.Combobox do
     build! do
       ~S|<button type="button" id="|
       button_id()
-      ~S|" aria-haspopup="true" aria-expanded="|
+      ~S|" aria-label="Open" aria-haspopup="true" aria-expanded="|
 
       if open?(), do: "true", else: "false"
 
       ~S|" aria-controls="|
       listbox_id()
 
-      ~S|" data-action="toggle" data-keydown-arrow-down data-keydown-arrow-up="focus_previous_item">|
+      ~S|" data-action="toggle">|
 
-      "Click me"
+      ~S|<hero-icon class="hero-chevron-down-solid size-4"></hero-icon>|
 
       ~S|</button>|
     end
@@ -324,7 +324,7 @@ defmodule OrbShowcase.Widgets.Combobox do
 
       ~S|" data-keydown-escape="close" data-keydown-arrow-up="focus_previous_item" data-keydown-arrow-down="focus_next_item"|
 
-      if @active_item_index === 0 do
+      if open?() === 0 do
         " hidden"
       end
 
@@ -343,7 +343,9 @@ defmodule OrbShowcase.Widgets.Combobox do
       if state_at_index_matches_input?(index) do
         ~S|<li role="option" id="|
         option_id(index)
-        ~S|" tabindex="-1" data-action="select_item:[|
+        ~S|" aria-selected="|
+        if index === @active_item_index, do: "true", else: "false"
+        ~S|" data-action="select_item:[|
         append!(decimal_u32: index)
         ~S|]">|
         state_at_index(index)
