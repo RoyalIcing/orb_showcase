@@ -30,7 +30,9 @@ class GoldenOrb extends HTMLElement {
         const { signal } = aborter;
 
         this.addEventListener("click", (event) => {
-            const action = event.target.dataset.action;
+            const { target } = event;
+            const action = target.closest(`[data-action]`)?.dataset?.action;
+
             if (typeof action === "string") {
                 this.exports[action]?.apply();
                 this.update();
@@ -42,17 +44,15 @@ class GoldenOrb extends HTMLElement {
 
             const action = target.dataset.inputWrite;
             if (typeof action === "string") {
-                if (typeof action === "string") {
-                    console.log("calling", action, this.exports);
-                    const result = this.exports[action]?.apply();
-                    if (!Array.isArray(result) || result.length !== 2) {
-                        throw Error(`Expected input write action ${action} to return (str_ptr, str_len) tuple.`)
-                    }
-
-                    this.memory.writeStringAt(target.value, result[0], result[1]);
-
-                    this.update();
+                console.log("calling", action, this.exports);
+                const result = this.exports[action]?.apply();
+                if (!Array.isArray(result) || result.length !== 2) {
+                    throw Error(`Expected input write action ${action} to return (str_ptr, str_len) tuple.`)
                 }
+
+                this.memory.writeStringAt(target.value, result[0], result[1]);
+
+                this.update();
             }
         }, { signal });
 

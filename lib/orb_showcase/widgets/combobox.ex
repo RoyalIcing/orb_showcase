@@ -293,7 +293,7 @@ defmodule OrbShowcase.Widgets.Combobox do
     build! do
       ~S|<button type="button" id="|
       button_id()
-      ~S|" aria-label="Open" aria-haspopup="true" aria-expanded="|
+      ~S|" tabindex="-1" aria-label="Open" aria-haspopup="true" aria-expanded="|
 
       if open?(), do: "true", else: "false"
 
