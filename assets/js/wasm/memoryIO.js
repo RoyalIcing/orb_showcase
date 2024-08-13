@@ -12,12 +12,17 @@ export class MemoryIO {
     return utf8Decoder.decode(memoryBytes.subarray(ptr, ptr + len));
   }
 
-  writeStringAt(stringValue, memoryOffset) {
+  writeStringAt(stringValue, memoryOffset, maximum = Infinity) {
     const { memoryBytes } = this;
 
     stringValue = stringValue.toString();
     const bytes = utf8Encoder.encode(stringValue);
+    if (bytes.byteLength > maximum) {
+      throw Error(`Unable to write string to WebAssembly memory of byte length ${bytes.byteLength} as it over maximum ${maximum}.`);
+    }
+
     utf8Encoder.encodeInto(stringValue, memoryBytes.subarray(memoryOffset));
+    // TODO: do we have to write nul-byte?
     memoryBytes[memoryOffset + bytes.length] = 0x0;
     return bytes.byteLength;
   }

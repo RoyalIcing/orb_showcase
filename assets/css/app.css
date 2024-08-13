@@ -3,3 +3,8 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+:root {
+  --lipid-focus: hsl(220 60% 50%);
+  /* --lipid-focus: #2563eb; */
+}

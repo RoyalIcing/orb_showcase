@@ -37,6 +37,25 @@ class GoldenOrb extends HTMLElement {
             }
         }, { signal });
 
+        this.addEventListener("input", (event) => {
+            const { target } = event;
+
+            const action = target.dataset.inputWrite;
+            if (typeof action === "string") {
+                if (typeof action === "string") {
+                    console.log("calling", action, this.exports);
+                    const result = this.exports[action]?.apply();
+                    if (!Array.isArray(result) || result.length !== 2) {
+                        throw Error(`Expected input write action ${action} to return (str_ptr, str_len) tuple.`)
+                    }
+
+                    this.memory.writeStringAt(target.value, result[0], result[1]);
+
+                    this.update();
+                }
+            }
+        }, { signal });
+
         this.addEventListener("keydown", (event) => {
             const { target, key } = event;
             console.log(key, event.type);
@@ -107,15 +126,24 @@ class GoldenOrb extends HTMLElement {
 
         const string = reader.text_html();
 
+        const focused = document.activeElement;
+        const focusedID = focused?.id;
+        const selectionStart = focused?.selectionStart;
+        const selectionEnd = focused?.selectionEnd;
+
         this.innerHTML = string;
         // window.morphdom(this, string);
 
-        const focusID = reader.focus_id();
+        const focusID = reader.focus_id() || focusedID;
         console.log(string)
         console.log(focusID)
 
         document.getElementById(focusID)?.focus();
         console.log(document.activeElement);
+
+        if (typeof document.activeElement?.setSelectionRange === "function" && selectionStart != null && selectionEnd != null) {
+            document.activeElement.setSelectionRange(selectionStart, selectionEnd);
+        }
     }
 }
 
