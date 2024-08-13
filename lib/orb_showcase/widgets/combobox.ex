@@ -186,7 +186,6 @@ defmodule OrbShowcase.Widgets.Combobox do
   defw open() do
     if @item_count > 0 do
       @open? = 1
-      @active_item_index = 1
       @focus_enum = FocusEnum.input()
     end
   end
