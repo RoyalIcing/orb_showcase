@@ -27,6 +27,9 @@ config :mix_systemd,
   # base_dir: "/opt",
   dirs: [
     :configuration,
+    :logs,
+    :runtime,
+    :cache,
     :tmp
   ],
   env_files: [
@@ -35,4 +38,31 @@ config :mix_systemd,
   ],
   env_vars: [
     # "PORT=8080",
+  ]
+
+config :mix_deploy,
+  app_user: "caddy",
+  app_group: "caddy",
+  # Copy config/environment to /etc/foo/environment
+  copy_files: [
+    %{
+      src: "config/environment",
+      dst: [:configuration_dir, "/environment"],
+      user: "$DEPLOY_USER",
+      group: "$APP_GROUP",
+      mode: "640"
+    }
+  ],
+  # Generate these scripts in bin
+  templates: [
+    "init-local",
+    "create-users",
+    "create-dirs",
+    "copy-files",
+    "enable",
+    "release",
+    "restart",
+    "rollback",
+    "start",
+    "stop"
   ]
