@@ -61,7 +61,8 @@ defmodule OrbShowcase.MixProject do
       {:wasmex, "~> 0.9.1"},
       {:req, "~> 0.5.6"},
       {:nimble_csv, "~> 1.2"},
-      {:mix_systemd, "~> 0.7"}
+      {:mix_systemd, "~> 0.7"},
+      {:mix_deploy, "~> 0.7"}
     ]
   end
 
