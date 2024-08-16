@@ -9,7 +9,8 @@ defmodule OrbShowcase.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      releases: releases()
     ]
   end
 
@@ -81,6 +82,15 @@ defmodule OrbShowcase.MixProject do
         "tailwind orb_showcase --minify",
         "esbuild orb_showcase --minify",
         "phx.digest"
+      ]
+    ]
+  end
+
+  defp releases do
+    [
+      prod: [
+        include_executables_for: [:unix],
+        steps: [:assemble, :tar]
       ]
     ]
   end
