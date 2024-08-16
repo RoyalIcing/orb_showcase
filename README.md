@@ -12,19 +12,25 @@ Now you can visit [`localhost:8344`](http://localhost:8344) from your browser.
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
 ```bash
+# Caddy public server
 cd /root
 micro Caddyfile
 caddy fmt --overwrite
 caddy reload
 
+# Elixir application
 cd /var/www/orb_showcase
+git pull --rebase
 
+# Regenerate systemd and bin scripts
 MIX_ENV=prod mix systemd.generate
 MIX_ENV=prod mix deploy.generate
 
+# Change environment
 micro config/environment
 bin/deploy-copy-files
 
+# Release new version
 MIX_ENV=prod mix release
 mix assets.deploy
 bin/deploy-release
