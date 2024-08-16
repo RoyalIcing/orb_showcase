@@ -39,3 +39,4 @@ npm-debug.log
 
 # Ignore templates from https://github.com/cogini/mix_systemd
 /rel/templates/systemd/*
+/config/environment
