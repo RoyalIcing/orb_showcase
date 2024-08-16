@@ -37,6 +37,7 @@ config :mix_systemd,
     ["-", :configuration_dir, "/environment"]
   ],
   env_vars: [
+    "PHX_SERVER=true"
     # "PORT=8080",
   ]
 
