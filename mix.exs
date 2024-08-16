@@ -88,7 +88,7 @@ defmodule OrbShowcase.MixProject do
 
   defp releases do
     [
-      prod: [
+      orb_showcase: [
         include_executables_for: [:unix],
         steps: [:assemble, :tar]
       ]
