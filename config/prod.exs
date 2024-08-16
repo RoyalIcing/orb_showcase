@@ -19,3 +19,20 @@ config :logger, level: :info
 
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.
+
+config :mix_systemd,
+  app_user: "caddy",
+  app_group: "caddy",
+  # base_dir: "/srv",
+  # base_dir: "/opt",
+  dirs: [
+    :configuration,
+    :tmp
+  ],
+  env_files: [
+    # Load environment vars from /srv/mix-deploy-example/etc/environment
+    ["-", :configuration_dir, "/environment"]
+  ],
+  env_vars: [
+    # "PORT=8080",
+  ]
