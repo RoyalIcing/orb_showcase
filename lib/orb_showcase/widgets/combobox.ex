@@ -13,6 +13,8 @@ defmodule OrbShowcase.Widgets.Combobox do
     @usa_states_url "https://raw.githubusercontent.com/jasonong/List-of-US-States/master/states.csv"
     # @world_states_url "https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/csv/states.csv"
 
+    def usa_states_url(), do: @usa_states_url
+
     NimbleCSV.define(StatesCSV, [])
 
     defp do_states_data() do
@@ -54,6 +56,23 @@ defmodule OrbShowcase.Widgets.Combobox do
   SilverOrb.Arena.def(Output, pages: 1)
 
   SilverOrb.Arena.def(States, pages: 1)
+
+  # SilverOrb.defarena States do
+  #   defmodule Lookup do
+  #     def state_address_at_index(index) do
+  #       states_data = DataSource.states_data()
+
+  #       States.Values.start_byte_offset() + index * states_data.stride
+  #     end
+  #   end
+
+  #   with states_data = DataSource.states_data() do
+  #     for {[state, abbreviation], index} <- Enum.with_index(states_data.rows) do
+  #       Memory.initial_data!(States.Values.start_byte_offset() + index * states_data.stride, state)
+  #       # Memory.initial_data!(States.Lookup.state_address_at_index(index), state)
+  #     end
+  #   end
+  # end
 
   defmodule States.Lookup do
     def state_address_at_index(index) do
@@ -138,7 +157,8 @@ defmodule OrbShowcase.Widgets.Combobox do
     end
 
     loop EachChar do
-      if ascii_to_lower(Memory.load!(I32.U8, state_ptr)) !== ascii_to_lower(Memory.load!(I32.U8, input_ptr)) do
+      if ascii_to_lower(Memory.load!(I32.U8, state_ptr)) !==
+           ascii_to_lower(Memory.load!(I32.U8, input_ptr)) do
         return(0)
       end
 
