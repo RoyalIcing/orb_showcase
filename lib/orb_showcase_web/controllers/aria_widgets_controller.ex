@@ -53,4 +53,9 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     |> Orb.to_wat()
     |> OrbShowcase.WasmRegistry.wat_to_wasm()
   end
+
+  def react(conn, _params) do
+    conn
+    |> render(:react)
+  end
 end

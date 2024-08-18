@@ -2,30 +2,32 @@ defmodule OrbShowcaseWeb.Router do
   use OrbShowcaseWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, html: {OrbShowcaseWeb.Layouts, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, html: {OrbShowcaseWeb.Layouts, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/", OrbShowcaseWeb do
-    pipe_through :browser
+    pipe_through(:browser)
 
-    get "/", PageController, :home
+    get("/", PageController, :home)
 
-    get "/menu", AriaWidgetsController, :menu
-    get "/menu.wasm", AriaWidgetsController, :menu_wasm
+    get("/menu", AriaWidgetsController, :menu)
+    get("/menu.wasm", AriaWidgetsController, :menu_wasm)
 
-    get "/combobox", AriaWidgetsController, :combobox
-    get "/combobox.wasm", AriaWidgetsController, :combobox_wasm
+    get("/combobox", AriaWidgetsController, :combobox)
+    get("/combobox.wasm", AriaWidgetsController, :combobox_wasm)
 
-    get "/generate", GeneratorController, :create
+    get("/react", AriaWidgetsController, :react)
+
+    get("/generate", GeneratorController, :create)
   end
 
   # Other scopes may use custom stacks.
@@ -43,10 +45,10 @@ defmodule OrbShowcaseWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      live_dashboard "/dashboard", metrics: OrbShowcaseWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
+      live_dashboard("/dashboard", metrics: OrbShowcaseWeb.Telemetry)
+      forward("/mailbox", Plug.Swoosh.MailboxPreview)
     end
   end
 end

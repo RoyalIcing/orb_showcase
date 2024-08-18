@@ -17,14 +17,14 @@ defmodule OrbShowcase.Widgets.USAStatesCombobox do
 
     def usa_states_url(), do: @usa_states_url
 
-    NimbleCSV.define(StatesCSV, [])
+    NimbleCSV.define(StatesCSV2, [])
 
     defp do_states_data() do
       {:ok, _} = Application.ensure_all_started(:req)
 
       data = Req.get!(@usa_states_url).body
 
-      rows = StatesCSV.parse_string(data)
+      rows = StatesCSV2.parse_string(data)
 
       stride =
         for [state, _abbreviation] <- rows, reduce: 0 do

@@ -361,18 +361,18 @@ defmodule OrbShowcase.Widgets.Combobox do
 
   defwp state_option(index: I32), StringBuilder do
     build! do
-      if state_at_index_matches_input?(index) do
-        ~S|<li role="option" id="|
-        option_id(index)
-        ~S|" aria-selected="|
-        if index === @active_item_index, do: "true", else: "false"
-        ~S|" data-action="select_item:[|
-        append!(decimal_u32: index)
-        ~S|]">|
-        state_at_index(index)
-        ~S|</li>|
-        "\n"
-      end
+      ~S|<li role="option" id="|
+      option_id(index)
+      ~S|"|
+      if(state_at_index_matches_input?(index), do: "", else: " hidden")
+      ~S| aria-selected="|
+      if index === @active_item_index, do: "true", else: "false"
+      ~S|" data-action="select_item:[|
+      append!(decimal_u32: index)
+      ~S|]">|
+      state_at_index(index)
+      ~S|</li>|
+      "\n"
     end
   end
 

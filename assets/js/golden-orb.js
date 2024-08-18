@@ -5,6 +5,7 @@ const kebabize = (str) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs
 class GoldenOrb extends HTMLElement {
     connectedCallback() {
         const wasmURL = this.querySelector("source[type='application/wasm']")?.src;
+        console.log("GoldenOrb connected", wasmURL)
         if (!wasmURL) throw Error("Expected WebAssembly .wasm URL");
 
         this.instance = { exports: {} };
@@ -23,6 +24,8 @@ class GoldenOrb extends HTMLElement {
                         }
                     },
                 });
+
+                window.requestAnimationFrame(this.update.bind(this));
             });
 
         const aborter = new AbortController();
@@ -125,23 +128,68 @@ class GoldenOrb extends HTMLElement {
         const { reader } = this;
         if (!reader) return;
 
-        const string = reader.text_html();
+        const html = reader.text_html();
 
         const focused = document.activeElement;
         const focusedID = focused?.id;
         const selectionStart = focused?.selectionStart;
         const selectionEnd = focused?.selectionEnd;
 
+        // console.log(html);
+
         // TODO: find golden-orb element and replace just that.
-        this.innerHTML = string;
-        // window.morphdom(this, string);
+        // this.innerHTML = html;
+        // window.morphdom(this, html);
+
+        const range = document.createRange();
+        const fragment = range.createContextualFragment(html);
+        const newGoldenOrb = fragment.querySelector("golden-orb");
+
+        console.log(this.querySelectorAll(":not(source)"))
+        if (this.querySelectorAll(":not(source)").length === 0) {
+            this.innerHTML = newGoldenOrb.innerHTML;
+        } else {
+
+            // this.innerHTML = newGoldenOrb.innerHTML;
+
+            function* eachNode(a, b) {
+                while (a) {
+                    yield { a, b };
+
+                    if (a.firstChild) {
+                        yield* eachNode(a.firstChild, b.firstChild);
+                    }
+
+                    a = a.nextSibling;
+                    b = b.nextSibling;
+                }
+            }
+
+            for (const { a, b } of eachNode(newGoldenOrb, this)) {
+                if (a.nodeType === 1) {
+                    const previousAttributes = new Set(Array.from(b.attributes, attr => attr.name));
+
+                    for (const attr of a.attributes) {
+                        if (b.getAttribute(attr.name) !== attr.value) {
+                            b.setAttribute(attr.name, attr.value);
+                            console.log(attr.name, attr.value);
+                        }
+                        previousAttributes.delete(attr.name);
+                    }
+
+                    for (const attrToRemove of previousAttributes) {
+                        b.removeAttribute(attrToRemove);
+                    }
+                }
+            }
+        }
 
         const focusID = reader.focus_id() || focusedID;
-        console.log(string)
-        console.log(focusID)
+        // console.log(html);
+        console.log(focusID);
 
         document.getElementById(focusID)?.focus();
-        console.log(document.activeElement);
+        // console.log(document.activeElement);
 
         if (typeof document.activeElement?.setSelectionRange === "function" && selectionStart != null && selectionEnd != null) {
             document.activeElement.setSelectionRange(selectionStart, selectionEnd);
