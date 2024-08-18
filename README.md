@@ -31,7 +31,9 @@ micro config/environment
 bin/deploy-copy-files
 
 # Release new version
+mix deps.get
 MIX_ENV=prod mix release
+npm ci --prefix assets/
 mix assets.deploy
 bin/deploy-release
 bin/deploy-restart
