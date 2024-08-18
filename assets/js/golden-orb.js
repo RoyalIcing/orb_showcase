@@ -84,11 +84,9 @@ class GoldenOrb extends HTMLElement {
         }, { signal });
 
         this.addEventListener("pointerover", (event) => {
-            const { target, key } = event;
-            console.log(key, event.type);
-            const suffix = key || "";
+            const { target } = event;
 
-            const specificActionKey = event.type + suffix;
+            const specificActionKey = event.type;
             const specificActionAttribute = kebabize(specificActionKey);
 
             const foundTarget = target.closest(`[data-${specificActionAttribute}]`);
