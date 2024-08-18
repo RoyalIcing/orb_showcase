@@ -1,4 +1,5 @@
 import { MemoryIO } from "./wasm/memoryIO";
+import morphdom from "morphdom";
 
 const kebabize = (str) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? "-" : "") + $.toLowerCase())
 
@@ -145,6 +146,9 @@ class GoldenOrb extends HTMLElement {
         const fragment = range.createContextualFragment(html);
         const newGoldenOrb = fragment.querySelector("golden-orb");
 
+        morphdom(this, newGoldenOrb);
+
+        /*
         console.log(this.querySelectorAll(":not(source)"))
         if (this.querySelectorAll(":not(source)").length === 0) {
             this.innerHTML = newGoldenOrb.innerHTML;
@@ -154,14 +158,22 @@ class GoldenOrb extends HTMLElement {
 
             function* eachNode(a, b) {
                 while (a) {
+                    console.log(a.parentNode, b);
                     yield { a, b };
 
                     if (a.firstChild) {
                         yield* eachNode(a.firstChild, b.firstChild);
                     }
 
-                    a = a.nextSibling;
-                    b = b.nextSibling;
+                    try {
+                        a = a.nextSibling;
+                        b = b.nextSibling;
+                    }
+                    catch (error) {
+                        console.error(error);
+                        console.log("a:", a, "b:", b);
+                        break;
+                    }
                 }
             }
 
@@ -182,7 +194,7 @@ class GoldenOrb extends HTMLElement {
                     }
                 }
             }
-        }
+        }*/
 
         const focusID = reader.focus_id() || focusedID;
         // console.log(html);
