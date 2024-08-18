@@ -136,68 +136,13 @@ class GoldenOrb extends HTMLElement {
         const selectionStart = focused?.selectionStart;
         const selectionEnd = focused?.selectionEnd;
 
-        // console.log(html);
-
-        // TODO: find golden-orb element and replace just that.
-        // this.innerHTML = html;
-        // window.morphdom(this, html);
-
         const range = document.createRange();
         const fragment = range.createContextualFragment(html);
         const newGoldenOrb = fragment.querySelector("golden-orb");
 
         morphdom(this, newGoldenOrb);
 
-        /*
-        console.log(this.querySelectorAll(":not(source)"))
-        if (this.querySelectorAll(":not(source)").length === 0) {
-            this.innerHTML = newGoldenOrb.innerHTML;
-        } else {
-
-            // this.innerHTML = newGoldenOrb.innerHTML;
-
-            function* eachNode(a, b) {
-                while (a) {
-                    console.log(a.parentNode, b);
-                    yield { a, b };
-
-                    if (a.firstChild) {
-                        yield* eachNode(a.firstChild, b.firstChild);
-                    }
-
-                    try {
-                        a = a.nextSibling;
-                        b = b.nextSibling;
-                    }
-                    catch (error) {
-                        console.error(error);
-                        console.log("a:", a, "b:", b);
-                        break;
-                    }
-                }
-            }
-
-            for (const { a, b } of eachNode(newGoldenOrb, this)) {
-                if (a.nodeType === 1) {
-                    const previousAttributes = new Set(Array.from(b.attributes, attr => attr.name));
-
-                    for (const attr of a.attributes) {
-                        if (b.getAttribute(attr.name) !== attr.value) {
-                            b.setAttribute(attr.name, attr.value);
-                            console.log(attr.name, attr.value);
-                        }
-                        previousAttributes.delete(attr.name);
-                    }
-
-                    for (const attrToRemove of previousAttributes) {
-                        b.removeAttribute(attrToRemove);
-                    }
-                }
-            }
-        }*/
-
         const focusID = reader.focus_id() || focusedID;
-        // console.log(html);
         console.log(focusID);
 
         document.getElementById(focusID)?.focus();
