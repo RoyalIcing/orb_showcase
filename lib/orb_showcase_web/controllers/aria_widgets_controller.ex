@@ -10,7 +10,6 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     conn
     |> assign(:wat, wat)
     |> assign(:wasm, wasm)
-    |> assign(:wasm_size, byte_size(wasm))
     |> render(:menu)
   end
 
@@ -54,8 +53,35 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     |> OrbShowcase.WasmRegistry.wat_to_wasm()
   end
 
+  def calendar_grid(conn, _params) do
+    wat = Orb.to_wat(OrbShowcase.Widgets.CalendarGrid)
+
+    wasm = do_calendar_grid_wasm()
+
+    conn
+    |> assign(:wat, wat)
+    |> assign(:wasm, wasm)
+    |> render(:calendar_grid)
+  end
+
+  def calendar_grid_wasm(conn, _params) do
+    wasm(conn, do_calendar_grid_wasm())
+  end
+
+  defp do_calendar_grid_wasm() do
+    OrbShowcase.Widgets.CalendarGrid
+    |> Orb.to_wat()
+    |> OrbShowcase.WasmRegistry.wat_to_wasm()
+  end
+
   def react(conn, _params) do
     conn
     |> render(:react)
+  end
+
+  defp wasm(conn, wasm_bytes) do
+    conn
+    |> put_resp_content_type("application/wasm", nil)
+    |> send_resp(conn.status || 200, wasm_bytes)
   end
 end

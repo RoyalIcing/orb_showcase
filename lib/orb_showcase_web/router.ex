@@ -25,6 +25,9 @@ defmodule OrbShowcaseWeb.Router do
     get("/combobox", AriaWidgetsController, :combobox)
     get("/combobox.wasm", AriaWidgetsController, :combobox_wasm)
 
+    get("/calendar-grid", AriaWidgetsController, :calendar_grid)
+    get("/calendar-grid.wasm", AriaWidgetsController, :calendar_grid_wasm)
+
     get("/react", AriaWidgetsController, :react)
 
     get("/generate", GeneratorController, :create)
