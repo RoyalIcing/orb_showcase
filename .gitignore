@@ -42,3 +42,6 @@ npm-debug.log
 /rel/templates/deploy/*
 /bin/deploy-*
 /config/environment
+
+.lexical/
+.elixir_ls/
