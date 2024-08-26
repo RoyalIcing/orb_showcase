@@ -55,16 +55,30 @@ defmodule OrbShowcase.Widgets.CalendarGrid do
     end
   end
 
-  defwp weekday(day: I32), StringBuilder do
-    build! do
-      ~S|<td role="gridcell">|
-      append!(decimal_u32: day)
-      ~S|</td>|
+  defwp weekday(week: I32, weekday_index: I32, weekday_offset: I32, max_days: I32), StringBuilder,
+    day: I32 do
+    day = weekday_index - weekday_offset + 1 + (week - 1) * 7
+
+    if (week === 1 &&& weekday_index < weekday_offset) or day > max_days do
+      build! do
+        ~S|<td role="gridcell" aria-hidden="true"></td>|
+      end
+    else
+      build! do
+        ~S|<td role="gridcell">|
+        append!(decimal_u32: day)
+        ~S|</td>|
+      end
     end
   end
 
-  defwp table(), StringBuilder, week_offset: I32, week_index: I32, weekday_index: I32 do
-    week_offset = Gregorian.day_of_week(@year, @month, 1)
+  defwp table(), StringBuilder,
+    weekday_offset: I32,
+    max_days: I32,
+    week_index: I32,
+    weekday_index: I32 do
+    weekday_offset = Gregorian.day_of_week(@year, @month, 1)
+    max_days = Gregorian.days_in_month(@year, @month)
 
     build! do
       ~S|<table id="|
@@ -90,7 +104,7 @@ defmodule OrbShowcase.Widgets.CalendarGrid do
             const("<tr>")
           end
 
-          weekday(weekday_index)
+          weekday(week_index, weekday_index, weekday_offset, max_days)
 
           if weekday_index === 7 do
             const("</tr>")
@@ -107,7 +121,7 @@ defmodule OrbShowcase.Widgets.CalendarGrid do
 
         week_index = week_index + 1
 
-        if week_index <= 5 do
+        if week_index <= 6 do
           EachWeek.continue()
         end
       end
