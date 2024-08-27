@@ -172,10 +172,10 @@ defmodule OrbShowcase.Widgets.CalendarGrid do
       " "
       append!(decimal_u32: @month)
       ~S|</h1>|
-      ~S|<div>|
+      ~S|<fieldset>|
       previous_month_button()
       next_month_button()
-      ~S|</div>|
+      ~S|</fieldset>|
       table()
       "</golden-orb>\n"
       "</lipid-calendar-grid>\n"

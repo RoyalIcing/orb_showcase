@@ -1,9 +1,21 @@
 <style>
+  lipid-calendar-grid table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   lipid-calendar-grid h1 {
     text-align: center;
-    font-size: 3rem;
+    font-size: 200%;
+    font-weight: bold;
   }
-  lipid-calendar-grid button:not(table *) {
+  lipid-calendar-grid fieldset {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 1em;
+  }
+  lipid-calendar-grid fieldset button {
     padding: 0.5em 1em;
     background: rgba(255 255 255 / 20%);
     border: 1px solid rgba(255 255 255 / 10%);
