@@ -1,5 +1,9 @@
 <style>
-  lipid-calendar-grid button {
+  lipid-calendar-grid h1 {
+    text-align: center;
+    font-size: 3rem;
+  }
+  lipid-calendar-grid button:not(table *) {
     padding: 0.5em 1em;
     background: rgba(255 255 255 / 20%);
     border: 1px solid rgba(255 255 255 / 10%);
@@ -14,6 +18,11 @@
     text-align: center;
     width: 2em;
     line-height: 1.8;
+  }
+  lipid-calendar-grid td button {
+    display: block;
+    width: 100%;
+    text-align: center;
   }
 </style>
 

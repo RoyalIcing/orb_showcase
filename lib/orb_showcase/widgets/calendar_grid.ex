@@ -66,7 +66,9 @@ defmodule OrbShowcase.Widgets.CalendarGrid do
     else
       build! do
         ~S|<td role="gridcell">|
+        ~S|<button>|
         append!(decimal_u32: day)
+        ~S|</button>|
         ~S|</td>|
       end
     end
@@ -165,11 +167,11 @@ defmodule OrbShowcase.Widgets.CalendarGrid do
       "<lipid-calendar-grid>\n"
       "<golden-orb>\n"
       ~s|<source type="application/wasm" src="/calendar-grid.wasm">\n|
-      ~S|<div>|
+      ~S|<h1>|
       append!(decimal_u32: @year)
       " "
       append!(decimal_u32: @month)
-      ~S|</div>|
+      ~S|</h1>|
       ~S|<div>|
       previous_month_button()
       next_month_button()
