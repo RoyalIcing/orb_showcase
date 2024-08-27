@@ -32,9 +32,9 @@ bin/deploy-copy-files
 
 # Release new version
 mix deps.get
-MIX_ENV=prod mix release
 npm ci --prefix assets/
 mix assets.deploy
+MIX_ENV=prod mix release
 bin/deploy-release
 bin/deploy-restart
 
