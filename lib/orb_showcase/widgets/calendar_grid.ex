@@ -162,15 +162,33 @@ defmodule OrbShowcase.Widgets.CalendarGrid do
     end
   end
 
+  defwp month_name(month: I32), Str do
+    if month === 1, do: return("January")
+    if month === 2, do: return("February")
+    if month === 3, do: return("March")
+    if month === 4, do: return("April")
+    if month === 5, do: return("May")
+    if month === 6, do: return("June")
+    if month === 7, do: return("July")
+    if month === 8, do: return("August")
+    if month === 9, do: return("September")
+    if month === 10, do: return("October")
+    if month === 11, do: return("November")
+    if month === 12, do: return("December")
+
+    unreachable!()
+  end
+
   defw text_html(), StringBuilder do
     build! do
       "<lipid-calendar-grid>\n"
       "<golden-orb>\n"
       ~s|<source type="application/wasm" src="/calendar-grid.wasm">\n|
       ~S|<h1>|
-      append!(decimal_u32: @year)
+      month_name(@month)
       " "
-      append!(decimal_u32: @month)
+      append!(decimal_u32: @year)
+      # append!(decimal_u32: @month)
       ~S|</h1>|
       ~S|<fieldset>|
       previous_month_button()
