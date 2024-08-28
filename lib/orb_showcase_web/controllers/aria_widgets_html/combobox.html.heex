@@ -7,15 +7,25 @@
 <hr class="my-8" />
 
 <article class="prose prose-invert">
-  <p>At <strong>compile-time</strong> we:</p>
+  <p>At <strong>WebAssembly compile-time</strong> we:</p>
   <ol>
-    <li>Load CSV of USA States from <%= OrbShowcase.Widgets.USAStatesCombobox.DataSource.usa_states_url() %></li>
-    <li>Parse CSV using <code>NimbleCSV</code>.</li>
-    <li>Initialize each state to WebAssembly memory.</li>
+    <li><strong>Load CSV</strong> of USA States using <code>Req</code> from <%= OrbShowcase.Widgets.USAStatesCombobox.DataSource.usa_states_url() %></li>
+    <li><strong>Parse CSV</strong> using <code>NimbleCSV</code>.</li>
+    <li><strong>Initialize each state</strong> name in WebAssembly memory.</li>
   </ol>
-  <p>At <strong>runtime</strong> we:</p>
+  <p>At <strong>WebAssembly runtime</strong> we:</p>
   <ol>
-    <li>Use <code>SilverOrb.StringBuilder</code> for HTML template, looping over each state.</li>
+    <li><strong>Loop over each state</strong> name.</li>
+    <li><strong>Render HTML</strong> using <code>SilverOrb.StringBuilder</code>, with a list item for each state name.</li>
+  </ol>
+  <p>In the <strong>browser</strong> we:</p>
+  <ol>
+    <li>Download <code>.wasm</code> from server.</li>
+    <li>Instantiate <code>WebAssembly</code> instance in browser.</li>
+    <li>Call exported <code>text_html</code> on the WebAssembly instance, and <strong>read HTML from its memory</strong>.</li>
+    <li>Use <strong>morphdom</strong> (the same library LiveView uses) to efficiently <strong>update the DOM</strong>.</li>
+    <li>Listen to <strong>DOM events</strong> using event delegation, calling matching function export on the WebAssembly instance.</li>
+    <li>For each event received, repeat steps 3–5. Tada, we have an interactive widget!</li>
   </ol>
 </article>
 
