@@ -10,8 +10,7 @@ function callAction(action, exports) {
         const args = JSON.parse(argsJSON);
 
         console.log("calling", exportName, args, exports);
-        exports[exportName]?.apply(...args);
-
+        exports[exportName]?.apply(null, args);
     } else {
         console.log("calling", exportName, exports);
         exports[exportName]?.apply();
@@ -149,6 +148,7 @@ class GoldenOrb extends HTMLElement {
         if (!reader) return;
 
         const html = reader.text_html();
+        console.log(html);
 
         const focused = document.activeElement;
         const focusedID = focused?.id;
