@@ -1,7 +1,7 @@
 <.combobox-style />
 
 <div>
-  <WasmHTML.html wasm={@wasm} />
+  <GoldenOrb.html wasm={@wasm} transform={@transform_html} />
 </div>
 
 <hr class="my-8" />
@@ -17,6 +17,16 @@
   <ol>
     <li><strong>Loop over each state</strong> name.</li>
     <li><strong>Render HTML</strong> using <code>SilverOrb.StringBuilder</code>, with a list item for each state name.</li>
+  </ol>
+  <p>At <strong>HTTP response time</strong> we:</p>
+  <ol>
+    <li>Render initial HTML using <code>GoldenOrb.html</code> Phoenix Component that:
+      <ol>
+      <li>Instantiates <code>WebAssembly</code> instance on server.</li>
+      <li>Calls exported <code>text_html</code> on the WebAssembly instance, and <strong>read HTML from its memory</strong>.</li>
+      <li>Renders HTML as child.</li>
+      </ol>
+    </li>
   </ol>
   <p>In the <strong>browser</strong> we:</p>
   <ol>

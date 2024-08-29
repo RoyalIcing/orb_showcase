@@ -11,13 +11,13 @@ defmodule OrbShowcase.Widgets.Combobox do
     defstruct count: 0, rows: [], stride: 0
 
     @usa_states_url "https://raw.githubusercontent.com/jasonong/List-of-US-States/master/states.csv"
-    # @world_states_url "https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/csv/states.csv"
+    @world_states_url "https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/csv/states.csv"
 
     def usa_states_url(), do: @usa_states_url
 
     NimbleCSV.define(StatesCSV, [])
 
-    defp do_states_data() do
+    defp do_usa_states_data() do
       {:ok, _} = Application.ensure_all_started(:req)
 
       data = Req.get!(@usa_states_url).body
@@ -35,6 +35,50 @@ defmodule OrbShowcase.Widgets.Combobox do
         stride: stride
       }
       |> dbg()
+    end
+
+    defp do_passed_states_data(state_code_to_find) do
+      state_code_to_find = String.upcase(state_code_to_find)
+
+      {:ok, _} = Application.ensure_all_started(:req)
+
+      data = Req.get!(@world_states_url).body
+
+      [headers | rows] = StatesCSV.parse_string(data, skip_headers: false)
+
+      name_index = Enum.find_index(headers, &(&1 === "name"))
+      country_code_index = Enum.find_index(headers, &(&1 === "country_code"))
+      state_code_index = Enum.find_index(headers, &(&1 === "state_code"))
+
+      rows =
+        for row <- rows, Enum.at(row, country_code_index) === state_code_to_find do
+          state_name = Enum.at(row, name_index)
+          state_code = Enum.at(row, state_code_index)
+          [state_name, state_code]
+        end
+
+      stride =
+        for [state, _abbreviation] <- rows, reduce: 0 do
+          max_so_far -> max(max_so_far, byte_size(state))
+        end
+
+      %__MODULE__{
+        count: length(rows),
+        rows: rows,
+        stride: stride
+      }
+      |> dbg()
+    end
+
+    def do_states_data() do
+      locale = Process.get(:locale, "us")
+      dbg(locale)
+
+      case locale do
+        "au" -> do_passed_states_data("au")
+        "us" -> do_usa_states_data()
+        other -> do_passed_states_data(other)
+      end
     end
 
     def states_data() do
@@ -82,11 +126,20 @@ defmodule OrbShowcase.Widgets.Combobox do
     end
   end
 
-  with states_data = DataSource.states_data() do
-    for {[state, abbreviation], index} <- Enum.with_index(states_data.rows) do
-      Memory.initial_data!(States.Values.start_byte_offset() + index * states_data.stride, state)
-      # Memory.initial_data!(States.Lookup.state_address_at_index(index), state)
-    end
+  def __wasm_data_defs__(context) do
+    previous = super(context)
+
+    additions =
+      with states_data = DataSource.states_data() do
+        for {[state, abbreviation], index} <- Enum.with_index(states_data.rows) do
+          %Orb.Data{
+            offset: States.Values.start_byte_offset() + index * states_data.stride,
+            value: state
+          }
+        end
+      end
+
+    previous ++ additions
   end
 
   defwp trim_trailing_nul_bytes(start: I32.UnsafePointer, max_length: I32), I32, i: I32 do

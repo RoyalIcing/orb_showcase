@@ -27,27 +27,43 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     |> OrbShowcase.WasmRegistry.wat_to_wasm()
   end
 
-  def combobox(conn, _params) do
+  def combobox(conn, params) do
     wat = Orb.to_wat(OrbShowcase.Widgets.Combobox)
     # wasm = Orb.to_wasm(OrbShowcase.Widgets.Combobox)
 
-    wasm = do_combobox_wasm()
+    locale = params["locale"] |> dbg()
+    wasm = do_combobox_wasm(locale)
 
     conn
     |> assign(:wat, wat)
     |> assign(:wasm, wasm)
+    |> assign(:transform_html, fn html ->
+      case locale do
+        nil ->
+          html
+
+        locale ->
+          html |> String.replace("combobox.wasm", "combobox.wasm?locale=#{locale}")
+      end
+    end)
     |> render(:combobox)
   end
 
-  def combobox_wasm(conn, _params) do
-    wasm = do_combobox_wasm()
+  def combobox_wasm(conn, params) do
+    dbg(params)
+    locale = params["locale"]
+    wasm = do_combobox_wasm(locale)
 
     conn
     |> put_resp_content_type("application/wasm", nil)
     |> send_resp(200, wasm)
   end
 
-  defp do_combobox_wasm() do
+  defp do_combobox_wasm(locale) do
+    if locale do
+      Process.put(:locale, locale)
+    end
+
     OrbShowcase.Widgets.Combobox
     |> Orb.to_wat()
     |> OrbShowcase.WasmRegistry.wat_to_wasm()

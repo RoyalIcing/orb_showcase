@@ -6,7 +6,7 @@ defmodule OrbShowcaseWeb.AriaWidgetsHTML do
   """
   use OrbShowcaseWeb, :html
 
-  alias OrbShowcaseWeb.Wasm.HTML, as: WasmHTML
+  alias OrbShowcaseWeb.Wasm.HTML, as: GoldenOrb
 
   embed_templates "aria_widgets_html/*"
 end
