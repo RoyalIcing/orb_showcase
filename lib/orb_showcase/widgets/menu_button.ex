@@ -187,14 +187,6 @@ defmodule OrbShowcase.Widgets.MenuButton do
     end
   end
 
-  defw text_css(), StringBuilder do
-    build! do
-      ~S"""
-      lipid-menu-button button { background-color: var(--LipidMenuButton-background); }
-      """
-    end
-  end
-
   defw focus_id(), StringBuilder do
     build! do
       if @active_item_index > 0 do
@@ -210,14 +202,6 @@ defmodule OrbShowcase.Widgets.MenuButton do
           end
         end
       end
-    end
-  end
-
-  defw application_javascript(), StringBuilder do
-    build! do
-      ~S"""
-      // data-keydown-arrow-down
-      """
     end
   end
 end

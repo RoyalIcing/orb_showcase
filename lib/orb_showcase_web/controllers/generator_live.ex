@@ -24,12 +24,23 @@ defmodule OrbShowcaseWeb.GeneratorLive do
   def render(assigns) do
     ~H"""
     <form phx-submit="submit" class="space-y-8">
-      <.input id="prompt_textbox" type="textarea" label="Prompt" name="prompt" value={default_prompt()} rows={3} />
+      <.input
+        id="prompt_textbox"
+        type="textarea"
+        label="Prompt"
+        name="prompt"
+        value={default_prompt()}
+        rows={3}
+      />
       <.button type="submit">Generate</.button>
       <output for="prompt_textbox" class="flex">
         <pre class="whitespace-pre-wrap"><%= @output %></pre>
       </output>
     </form>
+
+    <pre class="whitespace-pre-wrap"><%= make_system_prompt() %></pre>
+
+    <hr class="my-8" />
 
     <WasmHTML.html wasm={sample_wasm()} />
 
@@ -37,26 +48,32 @@ defmodule OrbShowcaseWeb.GeneratorLive do
     """
   end
 
-  @impl Phoenix.LiveView
-  def handle_event("submit", form_data, socket) do
-    %{"prompt" => user_prompt} = form_data
-
+  defp make_system_prompt() do
     menu_example = do_read_menu_example()
     navigation_example = sample_source()
 
-    system_prompt = """
+    """
     You are generator of WebAssembly, using a DSL for Elixir called Orb.
 
     Note that Orb syntax is a DSL, not full Elixir. There is no `cond` or `case` (only `if`), no `while`. Variables must be declared with their type after the function argument definition, e.g. see `menu_list` declaring variable `i` of type `I32` by writing `i: I32`. Orb has only `===` not `==`. Prefer to hard-code items instead of using loops. There is no `put_elem`. Functions are define using a key-value syntax but they are passed just as values. `String` or `StringBuilder` cannot be passed as a value or function argument. Instead of making functions with dynamic strings, define separate functions multiple times for say each item. And I repeat there is no `case`, use `if` instead.
 
     Here is an example Orb module that renders static HTML for a navigation that is ARIA compliant.
+
     #{navigation_example}
 
     Here is an example Orb module that renders interactive HTML for a menu button that is ARIA compliant.
+
     #{menu_example}
 
     Please generate a new Orb module that renders ARIA-compliant interactive HTML for the stated problem. Name the Elixir module OrbShowcase.Widgets.Generated
     """
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("submit", form_data, socket) do
+    %{"prompt" => user_prompt} = form_data
+
+    system_prompt = make_system_prompt()
 
     result = OpenAI.complete(user_prompt, system_prompt)
 
