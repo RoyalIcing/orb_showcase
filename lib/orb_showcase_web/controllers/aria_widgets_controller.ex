@@ -28,10 +28,15 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
   end
 
   def combobox(conn, params) do
+    locale = params["locale"] |> dbg()
+
+    if locale do
+      Process.put(:locale, locale)
+    end
+
     wat = Orb.to_wat(OrbShowcase.Widgets.Combobox)
     # wasm = Orb.to_wasm(OrbShowcase.Widgets.Combobox)
 
-    locale = params["locale"] |> dbg()
     wasm = do_combobox_wasm(locale)
 
     conn
