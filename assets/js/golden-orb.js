@@ -3,6 +3,21 @@ import morphdom from "morphdom";
 
 const kebabize = (str) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? "-" : "") + $.toLowerCase())
 
+function callAction(action, exports) {
+    const [exportName, argsJSON] = action.split(":");
+
+    if (argsJSON) {
+        const args = JSON.parse(argsJSON);
+
+        console.log("calling", exportName, args, exports);
+        exports[exportName]?.apply(...args);
+
+    } else {
+        console.log("calling", exportName, exports);
+        exports[exportName]?.apply();
+    }
+}
+
 class GoldenOrb extends HTMLElement {
     connectedCallback() {
         const wasmURL = this.querySelector("source[type='application/wasm']")?.src;
@@ -19,6 +34,7 @@ class GoldenOrb extends HTMLElement {
                 this.reader = new Proxy(memoryIO, {
                     get(target, prop, receiver) {
                         return () => {
+                            console.log("calling via proxy", prop)
                             const [ptr, len] = instance.exports[prop]();
                             const string = target.readString(ptr, len);
                             return string;
@@ -38,7 +54,8 @@ class GoldenOrb extends HTMLElement {
             const action = target.closest(`[data-action]`)?.dataset?.action;
 
             if (typeof action === "string") {
-                this.exports[action]?.apply();
+                callAction(action, this.exports);
+                // this.exports[action]?.apply();
                 this.update();
             }
         }, { signal });

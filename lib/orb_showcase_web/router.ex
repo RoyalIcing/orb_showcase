@@ -31,6 +31,12 @@ defmodule OrbShowcaseWeb.Router do
     get("/react", AriaWidgetsController, :react)
 
     get("/generate", GeneratorController, :create)
+    get("/accordion", AriaWidgetsController, :accordion)
+    get("/accordion.wasm", AriaWidgetsController, :accordion_wasm)
+    get("/counter", AriaWidgetsController, :counter)
+    get("/counter.wasm", AriaWidgetsController, :counter_wasm)
+    get("/tabs", AriaWidgetsController, :tabs)
+    get("/tabs.wasm", AriaWidgetsController, :tabs_wasm)
   end
 
   # Other scopes may use custom stacks.

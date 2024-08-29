@@ -105,4 +105,97 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     |> put_resp_content_type("application/wasm", nil)
     |> send_resp(conn.status || 200, wasm_bytes)
   end
+
+  ####
+
+  def accordion(conn, _params) do
+    wat = Orb.to_wat(OrbShowcase.Widgets.Accordion)
+
+    wasm = do_accordion_wasm()
+
+    conn
+    |> assign(:wat, wat)
+    |> assign(:wasm, wasm)
+    |> render(:menu)
+  rescue
+    e ->
+      wat = Orb.to_wat(OrbShowcase.Widgets.Accordion)
+      text(conn, wat)
+  end
+
+  def accordion_wasm(conn, _params) do
+    wasm = do_accordion_wasm()
+
+    conn
+    |> put_resp_content_type("application/wasm", nil)
+    |> send_resp(200, wasm)
+  end
+
+  defp do_accordion_wasm() do
+    OrbShowcase.Widgets.Accordion
+    |> Orb.to_wat()
+    |> OrbShowcase.WasmRegistry.wat_to_wasm()
+  end
+
+  # Counter
+
+  def counter(conn, _params) do
+    wat = Orb.to_wat(OrbShowcase.Widgets.Counter)
+
+    wasm = do_counter_wasm()
+
+    conn
+    |> assign(:wat, wat)
+    |> assign(:wasm, wasm)
+    |> render(:menu)
+  rescue
+    e ->
+      wat = Orb.to_wat(OrbShowcase.Widgets.Counter)
+      text(conn, wat)
+  end
+
+  def counter_wasm(conn, _params) do
+    wasm = do_counter_wasm()
+
+    conn
+    |> put_resp_content_type("application/wasm", nil)
+    |> send_resp(200, wasm)
+  end
+
+  defp do_counter_wasm() do
+    OrbShowcase.Widgets.Counter
+    |> Orb.to_wat()
+    |> OrbShowcase.WasmRegistry.wat_to_wasm()
+  end
+
+  # Tabs
+
+  def tabs(conn, _params) do
+    wat = Orb.to_wat(OrbShowcase.Widgets.Tabs)
+
+    wasm = do_tabs_wasm()
+
+    conn
+    |> assign(:wat, wat)
+    |> assign(:wasm, wasm)
+    |> render(:menu)
+  rescue
+    e ->
+      wat = Orb.to_wat(OrbShowcase.Widgets.Tabs)
+      text(conn, wat)
+  end
+
+  def tabs_wasm(conn, _params) do
+    wasm = do_tabs_wasm()
+
+    conn
+    |> put_resp_content_type("application/wasm", nil)
+    |> send_resp(200, wasm)
+  end
+
+  defp do_tabs_wasm() do
+    OrbShowcase.Widgets.Tabs
+    |> Orb.to_wat()
+    |> OrbShowcase.WasmRegistry.wat_to_wasm()
+  end
 end
