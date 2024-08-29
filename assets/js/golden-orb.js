@@ -68,7 +68,11 @@ class GoldenOrb extends HTMLElement {
             const specificActionAttribute = kebabize(specificActionKey);
 
             // const action = target.closest(`[data-${specificActionAttribute}]`)?.dataset[specificActionKey] || target.dataset.action;
-            const action = target.closest(`[data-${specificActionAttribute}]`)?.dataset[specificActionKey];
+            let action = target.closest(`[data-${specificActionAttribute}]`)?.dataset[specificActionKey];
+
+            if (action === "") {
+                action = target.dataset.action;
+            }
 
             // const action = dataset[specificActionKey] || dataset.action;
 
