@@ -1,0 +1,58 @@
+<style>
+  lipid-tabs {
+    display: block;
+    font-family: Arial, sans-serif;
+    color: black;
+  }
+
+  lipid-tabs [role="tablist"] {
+    display: flex;
+    border-bottom: 2px solid #ccc;
+    padding: 0;
+    margin: 0;
+  }
+
+  lipid-tabs [role="tab"] {
+    padding: 10px 20px;
+    border: none;
+    background-color: #f0f0f0;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  lipid-tabs [role="tab"][aria-selected="true"] {
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-bottom: 2px solid #fff;
+    margin-bottom: -2px;
+  }
+
+  lipid-tabs [role="tab"]:hover {
+    background-color: #e0e0e0;
+  }
+
+  lipid-tabs [role="tab"]:focus {
+    outline: 2px solid #007bff;
+    outline-offset: -2px;
+  }
+
+  lipid-tabs [role="tabpanel"] {
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-top: none;
+    background-color: #fff;
+  }
+</style>
+
+<div>
+  <GoldenOrb.html wasm={@wasm} />
+</div>
+
+<hr class="my-8" />
+
+<details>
+  <summary>View WebAssembly source (<%= byte_size(@wasm) %> bytes compiled)</summary>
+  <pre><%= @wat %></pre>
+</details>

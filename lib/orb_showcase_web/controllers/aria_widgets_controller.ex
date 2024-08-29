@@ -178,7 +178,7 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     conn
     |> assign(:wat, wat)
     |> assign(:wasm, wasm)
-    |> render(:menu)
+    |> render(:tabs)
   rescue
     e ->
       wat = Orb.to_wat(OrbShowcase.Widgets.Tabs)
