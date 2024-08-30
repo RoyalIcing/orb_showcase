@@ -7,7 +7,8 @@
 <hr class="my-8" />
 
 <article class="prose prose-invert">
-  <p>At <strong>WebAssembly compile-time</strong> we:</p>
+  <p>When a HTTP request is made to load this page, we dynamically compile the WebAssembly for the above widget on-the-fly.</p>
+  <p>At <strong>WebAssembly compile-time</strong> (but Elixir runtime) we:</p>
   <ol>
     <li><strong>Load CSV</strong> of USA States using <code>Req</code> from <%= OrbShowcase.Widgets.USAStatesCombobox.DataSource.usa_states_url() %></li>
     <li><strong>Parse CSV</strong> using <code>NimbleCSV</code>.</li>
