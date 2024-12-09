@@ -6,7 +6,7 @@ defmodule OrbShowcaseWeb.Wasm.HTML do
 
   def html(assigns) do
     ~H"""
-    <%= raw(execute_wasm(@wasm, :text_html, @transform)) %>
+    {raw(execute_wasm(@wasm, :text_html, @transform))}
     """
   end
 

@@ -5,7 +5,7 @@
         <img src={~p"/images/orb-logo-blue-orange.svg"} width="80" height="80" />
       </a>
       <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
-        v<%= "0.0.51" %>
+        v{"0.0.51"}
       </p>
     </div>
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-100">
@@ -39,6 +39,6 @@
 <main class="px-4 py-20 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-2xl">
     <.flash_group flash={@flash} />
-    <%= @inner_content %>
+    {@inner_content}
   </div>
 </main>

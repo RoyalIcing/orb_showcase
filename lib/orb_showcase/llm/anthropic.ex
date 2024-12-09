@@ -3,7 +3,8 @@ defmodule OrbShowcase.LLM.Anthropic do
   @anthropic_model "claude-3-5-sonnet-20241022"
 
   defp req() do
-    api_key = System.get_env("ANTHROPIC_API_KEY") || raise "Env var ANTHROPIC_API_KEY must be set."
+    api_key =
+      System.get_env("ANTHROPIC_API_KEY") || raise "Env var ANTHROPIC_API_KEY must be set."
 
     Req.new(
       base_url: "https://api.anthropic.com",
@@ -22,7 +23,7 @@ defmodule OrbShowcase.LLM.Anthropic do
   def complete(message, system_prompt \\ "") do
     req_json = %{
       model: @anthropic_model,
-      max_tokens: 1024,
+      max_tokens: 1024 * 3,
       system: system_prompt,
       messages: [
         %{role: "user", content: message}

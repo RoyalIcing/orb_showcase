@@ -18,30 +18,41 @@ function callAction(action, exports) {
 }
 
 class GoldenOrb extends HTMLElement {
+    initWithInstance(instance) {
+        this.instance = instance;
+        const memoryIO = new MemoryIO(instance.exports.memory);
+        this.memory = memoryIO;
+        this.reader = new Proxy(memoryIO, {
+            get(target, prop, receiver) {
+                return () => {
+                    console.log("calling via proxy", prop)
+                    const [ptr, len] = instance.exports[prop]();
+                    const string = target.readString(ptr, len);
+                    return string;
+                }
+            },
+        });
+        
+        window.requestAnimationFrame(this.update.bind(this));
+    }
+    
     connectedCallback() {
-        const wasmURL = this.querySelector("source[type='application/wasm']")?.src;
-        console.log("GoldenOrb connected", wasmURL)
-        if (!wasmURL) throw Error("Expected WebAssembly .wasm URL");
+        let wasmURL = this.querySelector("source[type='application/wasm']")?.src;
+        console.log("<golden-orb> connected", wasmURL)
+        if (!wasmURL) throw Error("<golden-orb> requires a WebAssembly .wasm URL");
 
         this.instance = { exports: {} };
 
+        console.log(wasmURL);        
+        if (new URL(wasmURL).hash) {
+            const base64 = document.querySelector(new URL(wasmURL).hash).textContent;
+            wasmURL = `data:application/wasm;base64,${base64}`;
+            console.log(wasmURL);
+        }
+        
         WebAssembly.instantiateStreaming(fetch(wasmURL, { credentials: "omit" }))
             .then(({ instance }) => {
-                this.instance = instance;
-                const memoryIO = new MemoryIO(instance.exports.memory);
-                this.memory = memoryIO;
-                this.reader = new Proxy(memoryIO, {
-                    get(target, prop, receiver) {
-                        return () => {
-                            console.log("calling via proxy", prop)
-                            const [ptr, len] = instance.exports[prop]();
-                            const string = target.readString(ptr, len);
-                            return string;
-                        }
-                    },
-                });
-
-                window.requestAnimationFrame(this.update.bind(this));
+                this.initWithInstance(instance);
             });
 
         const aborter = new AbortController();
@@ -144,6 +155,7 @@ class GoldenOrb extends HTMLElement {
     get exports() { return this.instance.exports }
 
     update() {
+        console.log("update", this)
         const { reader } = this;
         if (!reader) return;
 

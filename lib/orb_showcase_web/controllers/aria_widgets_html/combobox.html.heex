@@ -7,25 +7,39 @@
 <hr class="my-8" />
 
 <article class="prose prose-invert">
-  <p>When a HTTP request is made to load this page, we dynamically compile the WebAssembly for the above widget on-the-fly.</p>
+  <p>
+    When a HTTP request is made to load this page, we dynamically compile the WebAssembly for the above widget on-the-fly.
+  </p>
   <p>At <strong>WebAssembly compile-time</strong> (but Elixir runtime) we:</p>
   <ol>
-    <li><strong>Load CSV</strong> of USA States using <code>Req</code> from <%= OrbShowcase.Widgets.USAStatesCombobox.DataSource.usa_states_url() %></li>
+    <li>
+      <strong>Load CSV</strong>
+      of USA States using <code>Req</code>
+      from {OrbShowcase.Widgets.USAStatesCombobox.DataSource.usa_states_url()}
+    </li>
     <li><strong>Parse CSV</strong> using <code>NimbleCSV</code>.</li>
     <li><strong>Initialize each state</strong> name in WebAssembly memory.</li>
   </ol>
   <p>At <strong>WebAssembly runtime</strong> we:</p>
   <ol>
     <li><strong>Loop over each state</strong> name.</li>
-    <li><strong>Render HTML</strong> using <code>SilverOrb.StringBuilder</code>, with a list item for each state name.</li>
+    <li>
+      <strong>Render HTML</strong>
+      using <code>SilverOrb.StringBuilder</code>, with a list item for each state name.
+    </li>
   </ol>
   <p>At <strong>HTTP response time</strong> we:</p>
   <ol>
-    <li>Render initial HTML using <code>GoldenOrb.html</code> Phoenix Component that:
+    <li>
+      Render initial HTML using <code>GoldenOrb.html</code>
+      Phoenix Component that:
       <ol>
-      <li>Instantiates <code>WebAssembly</code> instance on server.</li>
-      <li>Calls exported <code>text_html</code> on the WebAssembly instance, and <strong>read HTML from its memory</strong>.</li>
-      <li>Renders HTML as child.</li>
+        <li>Instantiates <code>WebAssembly</code> instance on server.</li>
+        <li>
+          Calls exported <code>text_html</code>
+          on the WebAssembly instance, and <strong>read HTML from its memory</strong>.
+        </li>
+        <li>Renders HTML as child.</li>
       </ol>
     </li>
   </ol>
@@ -33,9 +47,18 @@
   <ol>
     <li>Download <code>.wasm</code> from server.</li>
     <li>Instantiate <code>WebAssembly</code> instance in browser.</li>
-    <li>Call exported <code>text_html</code> on the WebAssembly instance, and <strong>read HTML from its memory</strong>.</li>
-    <li>Use <strong>morphdom</strong> (the same library LiveView uses) to efficiently <strong>update the DOM</strong>.</li>
-    <li>Listen to <strong>DOM events</strong> using event delegation, calling matching function export on the WebAssembly instance.</li>
+    <li>
+      Call exported <code>text_html</code>
+      on the WebAssembly instance, and <strong>read HTML from its memory</strong>.
+    </li>
+    <li>
+      Use <strong>morphdom</strong>
+      (the same library LiveView uses) to efficiently <strong>update the DOM</strong>.
+    </li>
+    <li>
+      Listen to <strong>DOM events</strong>
+      using event delegation, calling matching function export on the WebAssembly instance.
+    </li>
     <li>For each event received, repeat steps 3–5. Tada, we have an interactive widget!</li>
   </ol>
 </article>
@@ -43,6 +66,6 @@
 <hr class="my-8" />
 
 <details>
-  <summary>View WebAssembly source (<%= byte_size(@wasm) %> bytes compiled)</summary>
+  <summary>View WebAssembly source ({byte_size(@wasm)} bytes compiled)</summary>
   <pre><%= @wat %></pre>
 </details>
