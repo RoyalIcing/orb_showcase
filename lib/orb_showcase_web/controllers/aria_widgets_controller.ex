@@ -136,6 +136,37 @@ defmodule OrbShowcaseWeb.AriaWidgetsController do
     |> Orb.to_wat()
     |> OrbShowcase.WasmRegistry.wat_to_wasm()
   end
+  
+  ###
+  
+  def accordion_hot_dog_stand(conn, _params) do
+    wat = Orb.to_wat(OrbShowcase.Widgets.Accordion.HotDogStand)
+
+    wasm = do_accordion_hot_dog_stand_wasm()
+
+    conn
+    |> assign(:wat, wat)
+    |> assign(:wasm, wasm)
+    |> render(:menu)
+  rescue
+    e ->
+      wat = Orb.to_wat(OrbShowcase.Widgets.Accordion.HotDogStand)
+      text(conn, wat)
+  end
+
+  def accordion_hot_dog_stand_wasm(conn, _params) do
+    wasm = do_accordion_hot_dog_stand_wasm()
+
+    conn
+    |> put_resp_content_type("application/wasm", nil)
+    |> send_resp(200, wasm)
+  end
+
+  defp do_accordion_hot_dog_stand_wasm() do
+    OrbShowcase.Widgets.Accordion.HotDogStand
+    |> Orb.to_wat()
+    |> OrbShowcase.WasmRegistry.wat_to_wasm()
+  end
 
   # Counter
 

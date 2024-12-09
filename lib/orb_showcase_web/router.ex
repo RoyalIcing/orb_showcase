@@ -33,6 +33,10 @@ defmodule OrbShowcaseWeb.Router do
     get("/generate", GeneratorController, :create)
     get("/accordion", AriaWidgetsController, :accordion)
     get("/accordion.wasm", AriaWidgetsController, :accordion_wasm)
+    
+    get("/accordion-hot-dog-stand", AriaWidgetsController, :accordion_hot_dog_stand)
+    get("/accordion-hot-dog-stand.wasm", AriaWidgetsController, :accordion_hot_dog_stand_wasm)
+    
     get("/counter", AriaWidgetsController, :counter)
     get("/counter.wasm", AriaWidgetsController, :counter_wasm)
     get("/tabs", AriaWidgetsController, :tabs)
