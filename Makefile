@@ -1,3 +1,6 @@
+dev:
+	iex -S mix phx.server
+
 deploy:
 	mix deps.get
 	npm ci --prefix assets/
