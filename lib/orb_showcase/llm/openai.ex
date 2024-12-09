@@ -1,4 +1,4 @@
-defmodule OrbShowcase.Generator.OpenAI do
+defmodule OrbShowcase.LLM.OpenAI do
   # @gpt_model "gpt-4o-mini"
   @gpt_model "gpt-4o-2024-05-13"
 

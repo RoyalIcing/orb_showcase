@@ -1,7 +1,8 @@
 defmodule OrbShowcaseWeb.GeneratorLive do
   use OrbShowcaseWeb, :live_view
 
-  alias OrbShowcase.Generator.OpenAI
+  alias OrbShowcase.LLM.OpenAI
+  alias OrbShowcase.LLM.Anthropic
 
   alias OrbShowcaseWeb.Wasm.HTML, as: WasmHTML
 
@@ -75,7 +76,7 @@ defmodule OrbShowcaseWeb.GeneratorLive do
 
     system_prompt = make_system_prompt()
 
-    result = OpenAI.complete(user_prompt, system_prompt)
+    result = Anthropic.complete(user_prompt, system_prompt)
 
     # TODO: use assign_async
 
