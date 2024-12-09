@@ -10,7 +10,7 @@ defmodule OrbShowcaseWeb.GeneratorLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:output, nil)
+      |> assign(:output_async, nil)
 
     {:ok, socket}
   end
@@ -34,18 +34,24 @@ defmodule OrbShowcaseWeb.GeneratorLive do
         rows={3}
       />
       <.button type="submit">Generate</.button>
-      <output for="prompt_textbox" class="flex">
-        <pre class="whitespace-pre-wrap"><%= @output %></pre>
-      </output>
+      <.async_result :if={@output_async} :let={output} assign={@output_async}>
+        <:loading>Generating...</:loading>
+        <:failed :let={failure}>We couldn’t generate your module. <%= inspect(failure) %></:failed>
+        <%= if output do %>
+          <output for="prompt_textbox" class="flex">
+            <pre class="whitespace-pre-wrap"><%= output %></pre>
+          </output>
+        <% end %>
+      </.async_result>
     </form>
 
-    <pre class="whitespace-pre-wrap"><%= make_system_prompt() %></pre>
+    <pre hidden class="whitespace-pre-wrap"><%= make_system_prompt() %></pre>
 
     <hr class="my-8" />
 
     <WasmHTML.html wasm={sample_wasm()} />
 
-    <.output_wasm_html result={@output} />
+    <.output_wasm_html :if={output_async = @output_async} result={output_async.result} />
     """
   end
 
@@ -76,13 +82,16 @@ defmodule OrbShowcaseWeb.GeneratorLive do
 
     system_prompt = make_system_prompt()
 
-    result = Anthropic.complete(user_prompt, system_prompt)
-
-    # TODO: use assign_async
+    # result = Anthropic.complete(user_prompt, system_prompt)
 
     socket =
       socket
-      |> assign(:output, result)
+      |> assign_async(:output_async, fn ->
+        result = Anthropic.complete(user_prompt, system_prompt)
+        _ = prompt_result_to_wasm(result)
+        {:ok, %{output_async: result}}
+      end)
+      # |> assign(:output, result)
 
     {:noreply, socket}
   end

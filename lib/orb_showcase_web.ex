@@ -89,6 +89,7 @@ defmodule OrbShowcaseWeb do
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
+      alias Phoenix.LiveView.AsyncResult
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
