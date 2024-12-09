@@ -45,3 +45,5 @@ npm-debug.log
 
 .lexical/
 .elixir_ls/
+
+.nova/
